@@ -494,6 +494,10 @@
 
   function openCertModal(cert) {
     const isEdit = !!cert;
+    const hasImg = cert && cert.images && cert.images.length;
+    const fileHint = hasImg
+      ? 'Já há ' + cert.images.length + ' página(s). Enviar um PDF aqui substitui a imagem atual.'
+      : 'A galeria só mostra certificados com imagem. Pode enviar agora ou depois.';
     openModal(isEdit ? 'Editar certificação' : 'Nova certificação', `
       <div class="row">
         <div class="col-6 mb-3">
@@ -523,6 +527,11 @@
         <label class="form-label">URL da credencial (opcional)</label>
         <input class="form-control" id="c-url" value="${esc(cert ? cert.url : '')}">
       </div>
+      <div class="mb-3">
+        <label class="form-label">Certificado (PDF)</label>
+        <input type="file" class="form-control" id="c-file" accept="application/pdf">
+        <div class="form-text text-muted mt-1">${fileHint}</div>
+      </div>
     `, async () => {
       const payload = {
         id: $('#c-id').value.trim(),
@@ -532,9 +541,19 @@
         credential_id: $('#c-cred').value,
         url: $('#c-url').value
       };
+      const id = isEdit ? cert.id : $('#c-id').value.trim();
       if (isEdit) await api('/api/certifications/' + cert.id, { method: 'PUT', body: payload });
       else await api('/api/certifications', { method: 'POST', body: payload });
-      toast('Salvo');
+
+      const fileInput = $('#c-file');
+      if (fileInput && fileInput.files.length) {
+        const fd = new FormData();
+        fd.append('file', fileInput.files[0]);
+        await api('/api/certifications/' + id + '/image', { method: 'POST', body: fd });
+        toast('Salvo com imagem');
+      } else {
+        toast('Salvo');
+      }
       await renderPage('certs');
     });
   }
