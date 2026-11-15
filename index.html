@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow, noarchive">
+  <title>Painel Admin | IgorDev</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ===================== LOGIN ===================== -->
+  <div id="login-view" class="login-wrap">
+    <div class="login-card">
+      <div class="login-brand"><i class="bi bi-shield-lock"></i> IgorDev</div>
+      <h1 class="h5 fw-bold mb-1">Painel do portfólio</h1>
+      <p class="text-muted small mb-4">Acesso restrito. Informe suas credenciais.</p>
+      <form id="login-form">
+        <div class="mb-3">
+          <label class="form-label small text-secondary">Usuário</label>
+          <input class="form-control" id="login-username" autocomplete="username" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label small text-secondary">Senha</label>
+          <input type="password" class="form-control" id="login-password" autocomplete="current-password" required>
+        </div>
+        <button class="btn btn-primary w-100 py-2 fw-semibold" type="submit">Entrar</button>
+        <div id="login-error" class="text-danger small mt-2"></div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===================== APP ===================== -->
+  <div id="app-view" hidden>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <div class="sidebar-brand"><i class="bi bi-shield-lock"></i> IgorDev</div>
+        <nav class="sidebar-nav">
+          <button class="nav-btn active" data-page="skills"><i class="bi bi-stars"></i> Habilidades</button>
+          <button class="nav-btn" data-page="projects"><i class="bi bi-kanban"></i> Projetos</button>
+          <button class="nav-btn" data-page="certs"><i class="bi bi-patch-check"></i> Certificações</button>
+          <button class="nav-btn" data-page="site"><i class="bi bi-window"></i> Conteúdo do site</button>
+          <button class="nav-btn" data-page="publish"><i class="bi bi-rocket-takeoff"></i> Publicar</button>
+        </nav>
+        <div class="sidebar-foot">
+          <button id="btn-logout" class="btn btn-sm btn-outline-secondary w-100"><i class="bi bi-box-arrow-right"></i> Sair</button>
+        </div>
+      </aside>
+      <main class="main">
+        <header class="topbar">
+          <h1 id="page-title" class="h5 fw-bold mb-0">Habilidades</h1>
+          <span id="api-status" class="badge rounded-pill bg-secondary-subtle text-secondary border">…</span>
+        </header>
+        <div id="content" class="content"></div>
+      </main>
+    </div>
+  </div>
+
+  <!-- ===================== MODAL GENÉRICO ===================== -->
+  <div class="modal fade" id="generic-modal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="generic-modal-title"></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body" id="generic-modal-body"></div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-primary" id="generic-modal-save">Salvar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

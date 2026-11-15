@@ -1,0 +1,189 @@
+:root {
+  --bg: #0b0f17;
+  --panel: #121826;
+  --line: #1f2937;
+  --text: #f3f4f6;
+  --muted: #9ca3af;
+  --accent: #6366f1;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+/* ---------- login ---------- */
+.login-wrap {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 380px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 32px;
+}
+
+.login-brand {
+  font-weight: 800;
+  font-size: 20px;
+  margin-bottom: 20px;
+}
+
+.login-brand i { color: var(--accent); }
+
+/* ---------- shell ---------- */
+.app-shell {
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar {
+  width: 240px;
+  background: var(--panel);
+  border-right: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  padding: 20px 12px;
+  gap: 16px;
+}
+
+.sidebar-brand {
+  font-weight: 800;
+  font-size: 18px;
+  padding: 0 12px 8px;
+}
+
+.sidebar-brand i { color: var(--accent); }
+
+.sidebar-nav { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+
+.nav-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 12px;
+  background: transparent;
+  border: 0;
+  border-radius: 10px;
+  color: var(--muted);
+  font-size: 14px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.nav-btn:hover { background: #1a2130; color: var(--text); }
+.nav-btn.active { background: var(--accent); color: #fff; }
+
+.sidebar-foot { padding: 0 4px; }
+
+/* ---------- main ---------- */
+.main { flex: 1; display: flex; flex-direction: column; }
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 28px;
+  border-bottom: 1px solid var(--line);
+  background: var(--panel);
+}
+
+.content { padding: 28px; max-width: 980px; width: 100%; }
+
+/* ---------- cards / listas ---------- */
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.list-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  margin-bottom: 8px;
+  background: #0e1420;
+}
+
+.list-item .grow { flex: 1; min-width: 0; }
+.list-item .title { font-weight: 600; }
+.list-item .sub { color: var(--muted); font-size: 13px; }
+.list-item .icon-box { font-size: 20px; color: var(--accent); width: 28px; text-align: center; }
+
+.tag {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  background: #1f2937;
+  color: var(--muted);
+  margin: 2px 3px 2px 0;
+}
+
+.btn-icon {
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--muted);
+  border-radius: 8px;
+  padding: 4px 9px;
+  cursor: pointer;
+}
+
+.btn-icon:hover { color: var(--text); background: #1a2130; }
+.btn-icon.danger:hover { color: #f87171; border-color: #f87171; }
+
+.empty { color: var(--muted); text-align: center; padding: 32px 0; }
+
+/* ---------- forms no modal ---------- */
+.form-label { color: var(--muted); }
+.form-control, .form-select {
+  background: #0b0f17;
+  border: 1px solid var(--line);
+  color: var(--text);
+}
+.form-control:focus, .form-select:focus {
+  background: #0b0f17;
+  color: var(--text);
+  border-color: var(--accent);
+  box-shadow: none;
+}
+.form-check-input { background-color: #0b0f17; border-color: var(--line); }
+
+.link-row, .social-row {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.link-row { grid-template-columns: 1fr 2fr 1fr auto; }
+.social-row { grid-template-columns: 1fr 1fr 2fr auto; }
+
+/* ---------- publish ---------- */
+.publish-status { font-size: 14px; }
+.publish-status .ok { color: #34d399; }
+.publish-status .err { color: #f87171; }
