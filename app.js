@@ -48,7 +48,12 @@
     const res = await fetch(API + path, {
       method, headers, body: opts.body, credentials: 'include'
     });
-    if (res.status === 401) { showLogin(); throw new Error('nao-autenticado'); }
+    if (res.status === 401) {
+      let detail = 'nao-autenticado';
+      try { const j = await res.json(); detail = j.detail || detail; } catch (e) { /* noop */ }
+      if (path !== '/api/auth/login') showLogin();
+      throw new Error(detail);
+    }
     if (res.status === 403) throw new Error('sessao expirada; recarregue e entre de novo');
     if (!res.ok) {
       let detail = 'erro ' + res.status;
