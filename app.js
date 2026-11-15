@@ -25,14 +25,20 @@
     if (!wrap) {
       wrap = document.createElement('div');
       wrap.id = 'toasts';
-      wrap.style.cssText = 'position:fixed;bottom:20px;right:20px;z-index:2000;display:flex;flex-direction:column;gap:8px;';
+      wrap.className = 'toast-stack';
       document.body.appendChild(wrap);
     }
     const el = document.createElement('div');
-    el.className = 'px-4 py-3 rounded-3 text-white shadow ' + (type === 'error' ? 'bg-danger' : 'bg-success');
-    el.textContent = message;
+    el.className = 'toast-item ' + (type === 'error' ? 'toast-error' : 'toast-success');
+    const icon = document.createElement('i');
+    icon.className = 'bi ' + (type === 'error' ? 'bi-exclamation-circle' : 'bi-check-circle');
+    const text = document.createElement('span');
+    text.textContent = message;
+    el.appendChild(icon);
+    el.appendChild(text);
     wrap.appendChild(el);
-    setTimeout(() => el.remove(), 3500);
+    setTimeout(() => el.classList.add('out'), 3200);
+    setTimeout(() => el.remove(), 3600);
   }
 
   async function api(path, opts) {
@@ -80,7 +86,14 @@
   async function checkAuth() {
     try {
       const me = await api('/api/auth/me');
-      if (me && me.authenticated) { showApp(); renderPage(currentPage); return true; }
+      if (me && me.authenticated) {
+        const name = me.username || 'admin';
+        $('#user-name').textContent = name;
+        $('#user-avatar').textContent = (name[0] || 'A').toUpperCase();
+        showApp();
+        renderPage(currentPage);
+        return true;
+      }
     } catch (e) { /* cai no showLogin */ }
     showLogin();
     return false;
@@ -115,6 +128,13 @@
     site: 'Conteúdo do site',
     publish: 'Publicar'
   };
+  const pageSubtitles = {
+    skills: 'Gerencie as habilidades exibidas no portfólio.',
+    projects: 'Gerencie os projetos em destaque.',
+    certs: 'Gerencie os certificados e credenciais.',
+    site: 'Edite hero, sobre, contato e redes sociais.',
+    publish: 'Envie as mudanças para o site em produção.'
+  };
   let currentPage = 'skills';
 
   $$('.nav-btn').forEach((btn) => {
@@ -127,6 +147,7 @@
 
   async function renderPage(page) {
     $('#page-title').textContent = pageTitles[page] || '';
+    $('#page-subtitle').textContent = pageSubtitles[page] || '';
     const content = $('#content');
     content.innerHTML = '';
     if (page === 'skills') await renderSkills(content);
@@ -174,10 +195,32 @@
     return div;
   }
 
-  function emptyNode() {
+  function emptyNode(icon, title, text, ctaLabel, onCta) {
     const d = document.createElement('div');
     d.className = 'empty';
-    d.textContent = 'Nada por aqui ainda.';
+    const ic = document.createElement('div');
+    ic.className = 'empty-icon';
+    const i = document.createElement('i');
+    i.className = 'bi ' + (icon || 'bi-inbox');
+    ic.appendChild(i);
+    const t = document.createElement('div');
+    t.className = 'empty-title';
+    t.textContent = title || 'Nada por aqui ainda';
+    d.appendChild(ic);
+    d.appendChild(t);
+    if (text) {
+      const tx = document.createElement('div');
+      tx.className = 'empty-text';
+      tx.textContent = text;
+      d.appendChild(tx);
+    }
+    if (ctaLabel && onCta) {
+      const b = document.createElement('button');
+      b.className = 'btn btn-primary btn-sm mt-3';
+      b.innerHTML = '<i class="bi bi-plus-lg"></i> ' + esc(ctaLabel);
+      b.addEventListener('click', onCta);
+      d.appendChild(b);
+    }
     return d;
   }
 
@@ -212,9 +255,9 @@
   // =====================================================
   async function renderSkills(root) {
     let skills = [];
-    try { skills = await api('/api/skills'); } catch (e) { root.appendChild(emptyNode()); return; }
+    try { skills = await api('/api/skills'); } catch (e) { root.appendChild(emptyNode('bi-wifi-off', 'Erro ao carregar', 'Não foi possível conectar à API.')); return; }
     const panel = panelHead('Habilidades', 'Nova', () => openSkillModal(null));
-    if (!skills.length) panel.appendChild(emptyNode());
+    if (!skills.length) panel.appendChild(emptyNode('bi-stars', 'Nenhuma habilidade', 'Adicione a primeira habilidade para exibir no site.', 'Nova habilidade', () => openSkillModal(null)));
     skills.forEach((s, i) => {
       const item = document.createElement('div');
       item.className = 'list-item';
@@ -279,9 +322,9 @@
   // =====================================================
   async function renderProjects(root) {
     let projects = [];
-    try { projects = await api('/api/projects'); } catch (e) { root.appendChild(emptyNode()); return; }
+    try { projects = await api('/api/projects'); } catch (e) { root.appendChild(emptyNode('bi-wifi-off', 'Erro ao carregar', 'Não foi possível conectar à API.')); return; }
     const panel = panelHead('Projetos', 'Novo', () => openProjectModal(null));
-    if (!projects.length) panel.appendChild(emptyNode());
+    if (!projects.length) panel.appendChild(emptyNode('bi-kanban', 'Nenhum projeto', 'Adicione o primeiro projeto em destaque.', 'Novo projeto', () => openProjectModal(null)));
     projects.forEach((p, i) => {
       const item = document.createElement('div');
       item.className = 'list-item';
@@ -406,9 +449,9 @@
   // =====================================================
   async function renderCerts(root) {
     let certs = [];
-    try { certs = await api('/api/certifications'); } catch (e) { root.appendChild(emptyNode()); return; }
+    try { certs = await api('/api/certifications'); } catch (e) { root.appendChild(emptyNode('bi-wifi-off', 'Erro ao carregar', 'Não foi possível conectar à API.')); return; }
     const panel = panelHead('Certificações', 'Nova', () => openCertModal(null));
-    if (!certs.length) panel.appendChild(emptyNode());
+    if (!certs.length) panel.appendChild(emptyNode('bi-patch-check', 'Nenhuma certificação', 'Adicione seus certificados e credenciais.', 'Nova certificação', () => openCertModal(null)));
     certs.forEach((c, i) => {
       const item = document.createElement('div');
       item.className = 'list-item';
@@ -534,7 +577,7 @@
 
   async function renderSite(root) {
     let site;
-    try { site = await api('/api/site'); } catch (e) { root.appendChild(emptyNode()); return; }
+    try { site = await api('/api/site'); } catch (e) { root.appendChild(emptyNode('bi-wifi-off', 'Erro ao carregar', 'Não foi possível conectar à API.')); return; }
     site = site || {};
     const hero = site.hero || {};
     const about = site.about || {};
@@ -682,7 +725,7 @@
       const data = await api('/api/publish/status');
       const box = $('#publish-history');
       box.innerHTML = '';
-      if (!data.history.length) { box.innerHTML = '<div class="empty">Nenhuma publicação ainda.</div>'; return; }
+      if (!data.history.length) { box.innerHTML = '<div class="empty"><div class="empty-icon"><i class="bi bi-rocket-takeoff"></i></div><div class="empty-title">Nenhuma publicação ainda</div><div class="empty-text">Clique em "Publicar agora" para enviar as mudanças ao site.</div></div>'; return; }
       data.history.forEach((h) => {
         const d = document.createElement('div');
         d.className = 'list-item';

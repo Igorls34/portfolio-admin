@@ -15,19 +15,22 @@
   <!-- ===================== LOGIN ===================== -->
   <div id="login-view" class="login-wrap">
     <div class="login-card">
-      <div class="login-brand"><i class="bi bi-shield-lock"></i> IgorDev</div>
+      <div class="login-brand">
+        <span class="login-mark"><i class="bi bi-shield-lock"></i></span>
+        <span>IgorDev</span>
+      </div>
       <h1 class="h5 fw-bold mb-1">Painel do portfólio</h1>
-      <p class="text-muted small mb-4">Acesso restrito. Informe suas credenciais.</p>
+      <p class="login-sub">Gerencie o conteúdo do seu site em um só lugar.</p>
       <form id="login-form">
         <div class="mb-3">
-          <label class="form-label small text-secondary">Usuário</label>
+          <label class="form-label">Usuário</label>
           <input class="form-control" id="login-username" autocomplete="username" required>
         </div>
         <div class="mb-3">
-          <label class="form-label small text-secondary">Senha</label>
+          <label class="form-label">Senha</label>
           <input type="password" class="form-control" id="login-password" autocomplete="current-password" required>
         </div>
-        <button class="btn btn-primary w-100 py-2 fw-semibold" type="submit">Entrar</button>
+        <button class="btn btn-primary w-100 py-2" type="submit">Entrar</button>
         <div id="login-error" class="text-danger small mt-2"></div>
       </form>
     </div>
@@ -37,22 +40,39 @@
   <div id="app-view" hidden>
     <div class="app-shell">
       <aside class="sidebar">
-        <div class="sidebar-brand"><i class="bi bi-shield-lock"></i> IgorDev</div>
+        <div class="sidebar-brand">
+          <span class="login-mark"><i class="bi bi-shield-lock"></i></span>
+          <span>IgorDev</span>
+        </div>
         <nav class="sidebar-nav">
-          <button class="nav-btn active" data-page="skills"><i class="bi bi-stars"></i> Habilidades</button>
-          <button class="nav-btn" data-page="projects"><i class="bi bi-kanban"></i> Projetos</button>
-          <button class="nav-btn" data-page="certs"><i class="bi bi-patch-check"></i> Certificações</button>
-          <button class="nav-btn" data-page="site"><i class="bi bi-window"></i> Conteúdo do site</button>
-          <button class="nav-btn" data-page="publish"><i class="bi bi-rocket-takeoff"></i> Publicar</button>
+          <div class="nav-label">Gerenciar</div>
+          <button class="nav-btn active" data-page="skills"><i class="bi bi-stars"></i> <span>Habilidades</span></button>
+          <button class="nav-btn" data-page="projects"><i class="bi bi-kanban"></i> <span>Projetos</span></button>
+          <button class="nav-btn" data-page="certs"><i class="bi bi-patch-check"></i> <span>Certificações</span></button>
+          <button class="nav-btn" data-page="site"><i class="bi bi-window"></i> <span>Conteúdo do site</span></button>
+          <div class="nav-label">Publicação</div>
+          <button class="nav-btn nav-btn--accent" data-page="publish"><i class="bi bi-rocket-takeoff"></i> <span>Publicar</span></button>
         </nav>
         <div class="sidebar-foot">
-          <button id="btn-logout" class="btn btn-sm btn-outline-secondary w-100"><i class="bi bi-box-arrow-right"></i> Sair</button>
+          <span class="dot"></span>
+          <span>Painel online</span>
         </div>
       </aside>
+
       <main class="main">
         <header class="topbar">
-          <h1 id="page-title" class="h5 fw-bold mb-0">Habilidades</h1>
-          <span id="api-status" class="badge rounded-pill bg-secondary-subtle text-secondary border">…</span>
+          <div>
+            <h1 class="page-title" id="page-title">Habilidades</h1>
+            <p class="page-subtitle" id="page-subtitle">Gerencie as habilidades exibidas no portfólio.</p>
+          </div>
+          <div class="topbar-actions">
+            <span id="api-status" class="badge rounded-pill bg-secondary-subtle text-secondary border">…</span>
+            <div class="user-chip">
+              <span class="user-avatar" id="user-avatar">A</span>
+              <span class="user-name" id="user-name">admin</span>
+            </div>
+            <button id="btn-logout" class="btn-icon" title="Sair"><i class="bi bi-box-arrow-right"></i></button>
+          </div>
         </header>
         <div id="content" class="content"></div>
       </main>
