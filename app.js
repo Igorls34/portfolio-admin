@@ -328,9 +328,17 @@
     projects.forEach((p, i) => {
       const item = document.createElement('div');
       item.className = 'list-item';
-      const icon = document.createElement('div');
-      icon.className = 'icon-box'; icon.innerHTML = '<i class="' + esc(p.icon) + '"></i>';
-      item.appendChild(icon);
+      if (p.image) {
+        const thumb = document.createElement('img');
+        thumb.className = 'thumb';
+        thumb.src = API + '/uploads/projects/' + encodeURIComponent(p.image);
+        thumb.alt = '';
+        item.appendChild(thumb);
+      } else {
+        const icon = document.createElement('div');
+        icon.className = 'icon-box'; icon.innerHTML = '<i class="' + esc(p.icon) + '"></i>';
+        item.appendChild(icon);
+      }
       const grow = document.createElement('div'); grow.className = 'grow';
       const t = document.createElement('div'); t.className = 'title';
       t.textContent = p.title;
@@ -370,6 +378,12 @@
 
   function openProjectModal(project) {
     const isEdit = !!project;
+    const imgPreview = (project && project.image)
+      ? '<div class="mb-2"><img class="thumb-lg" src="' + API + '/uploads/projects/' + encodeURIComponent(project.image) + '" alt="Imagem atual"></div>'
+      : '';
+    const imgHint = (project && project.image)
+      ? 'Enviar outra imagem substitui a atual.'
+      : 'Aparece no topo do card no site.';
     openModal(isEdit ? 'Editar projeto' : 'Novo projeto', `
       <div class="row">
         <div class="col-6 mb-3">
@@ -402,6 +416,12 @@
         <div id="p-links">${linksRowsHtml(project ? project.links : [])}</div>
         <button type="button" class="btn btn-sm btn-outline-secondary" id="p-add-link"><i class="bi bi-plus"></i> Link</button>
       </div>
+      <div class="mb-3 mt-3">
+        <label class="form-label">Imagem do projeto (opcional)</label>
+        ${imgPreview}
+        <input type="file" class="form-control" id="p-file" accept="image/*">
+        <div class="form-text text-muted mt-1">${imgHint}</div>
+      </div>
     `, async () => {
       const links = $$('.link-row', $('#p-links')).map((row) => ({
         label: $('.l-label', row).value,
@@ -419,7 +439,16 @@
       };
       if (isEdit) await api('/api/projects/' + project.id, { method: 'PUT', body: payload });
       else await api('/api/projects', { method: 'POST', body: payload });
-      toast('Salvo');
+
+      const fileInput = $('#p-file');
+      if (fileInput && fileInput.files.length) {
+        const fd = new FormData();
+        fd.append('file', fileInput.files[0]);
+        await api('/api/projects/' + (isEdit ? project.id : $('#p-id').value.trim()) + '/image', { method: 'POST', body: fd });
+        toast('Salvo com imagem');
+      } else {
+        toast('Salvo');
+      }
       await renderPage('projects');
     });
 
@@ -498,6 +527,11 @@
     const fileHint = hasImg
       ? 'Já há ' + cert.images.length + ' página(s). Enviar um PDF aqui substitui a imagem atual.'
       : 'A galeria só mostra certificados com imagem. Pode enviar agora ou depois.';
+    const previewHtml = hasImg
+      ? '<div class="cert-previews mb-2">' +
+          cert.images.map((im) => '<img class="cert-preview-img" src="' + API + '/uploads/certs/' + encodeURIComponent(im.filename) + '" alt="Página ' + (im.position + 1) + '">').join('') +
+        '</div>'
+      : '';
     openModal(isEdit ? 'Editar certificação' : 'Nova certificação', `
       <div class="row">
         <div class="col-6 mb-3">
@@ -529,6 +563,7 @@
       </div>
       <div class="mb-3">
         <label class="form-label">Certificado (PDF)</label>
+        ${previewHtml}
         <input type="file" class="form-control" id="c-file" accept="application/pdf">
         <div class="form-text text-muted mt-1">${fileHint}</div>
       </div>
